@@ -44,19 +44,19 @@ install_cortex () {
     sudo curl --progress-bar --fail "$TARBALL_URL" | tar -xzf - -C "$INSTALL_TMPDIR"
 
     echo "Removing any previous installation."
-    sudo rm -f /usr/bin/cortex
+    sudo rm -f "/usr/bin/cortex"
     sudo rm -f "/usr/bin/cortex.$VERSION"
     sudo rm -f "/usr/lib/libcortex.so"
     sudo rm -f "/usr/lib/libcortex.so.$VERSION"
-    sudo rm -rf /usr/include/cortex
-    sudo rm -rf /usr/include/cortex/0.2.0-alpha/packages/cortex
-    sudo rm -rf /usr/lib/cortex/0.2.0-alpha/packages/cortex
+    sudo rm -rf "/usr/include/cortex"
+    sudo rm -rf "/usr/include/cortex/0.2.0-alpha/packages/cortex"
+    sudo rm -rf "/usr/lib/cortex/0.2.0-alpha/packages/cortex"
 
     echo "Copying files."
     sudo cp -R "$INSTALL_TMPDIR/" "/usr"
     rm -rf "$INSTALL_TMPDIR"
     sudo mv "/usr/bin/cortex" "/usr/bin/cortex.$VERSION"
-    sudo mv "/usr/bin/libcortex.so" "/usr/lib/libcortex.so.$VERSION"
+    sudo mv "/usr/lib/libcortex.so" "/usr/lib/libcortex.so.$VERSION"
     sudo ln -s "/usr/bin/cortex.$VERSION" "/usr/bin/cortex"
     sudo ln -s "/usr/lib/libcortex.so.$VERSION" "/usr/lib/libcortex.so"
 
