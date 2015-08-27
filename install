@@ -22,7 +22,7 @@ install_corto () {
     ARCHITECTURE=$(uname -p)
     PREFIX="/usr"
     FILENAME="corto"
-    TARBALL_URL="https://s3.amazonaws.com/cortobinaries/$FILENAME.$UNAME.$ARCHITECTURE.tar.gz"
+    TARBALL_URL="https://s3.amazonaws.com/cortobin/$FILENAME.$UNAME.$ARCHITECTURE.tar.gz"
     INSTALL_TMPDIR="$HOME/.corto/.download"
 
     echo
@@ -77,6 +77,7 @@ install_corto () {
     rm -rf "$INSTALL_TMPDIR"
     mkdir -p "$INSTALL_TMPDIR"
 
+    echo "$TARBALL_URL"
     sudo curl --progress-bar --fail "$TARBALL_URL" | tar -xzf - -C "$INSTALL_TMPDIR"
 
     echo "corto: installing files"
