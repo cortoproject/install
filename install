@@ -4,14 +4,14 @@ VERSION="0.2.0-alpha"
 
 install_cortex_fail() {
     >&2 echo "cortex: installation failed :("
-    # rm -rf "$INSTALL_TMPDIR"
+    rm -rf "$INSTALL_TMPDIR"
     sudo rm -f "/usr/bin/cortex"
     sudo rm -f "/usr/bin/cortex.$VERSION"
     sudo rm -f "/usr/lib/libcortex.so"
     sudo rm -f "/usr/lib/libcortex.so.$VERSION"
     sudo rm -rf "/usr/lib/cortex/$VERSION"
     sudo rm -rf "/usr/include/cortex/$VERSION"
-    # sudo rm -rf "$HOME/.cortex"
+    sudo rm -rf "$HOME/.cortex"
 }
 
 install_cortex () {
@@ -26,7 +26,7 @@ install_cortex () {
     INSTALL_TMPDIR="$HOME/.cortex/.download"
 
     echo
-    echo "Stand by, this will just take a second..."
+    echo "Hi! Stand by, this will just take a second..."
     echo
 
     # Check supported OS
