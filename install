@@ -25,6 +25,9 @@ install_corto () {
     TARBALL_URL="https://s3.amazonaws.com/cortobin/$FILENAME.$UNAME.$ARCHITECTURE.tar.gz"
     INSTALL_TMPDIR="$HOME/.corto/.download"
 
+    # Ask for password upfront
+    sudo true
+
     echo
     echo "Hi! Stand by, this will just take a second..."
     echo
@@ -42,9 +45,6 @@ install_corto () {
     fi
 
     trap install_corto_fail EXIT
-
-    # Ask for password upfront
-    sudo true
 
     # Remove existing cortex version
     if [ "`which cortex`" != "" ]  ; then
@@ -77,7 +77,6 @@ install_corto () {
     rm -rf "$INSTALL_TMPDIR"
     mkdir -p "$INSTALL_TMPDIR"
 
-    echo "$TARBALL_URL"
     sudo curl --progress-bar --fail "$TARBALL_URL" | tar -xzf - -C "$INSTALL_TMPDIR"
 
     echo "corto: installing files"
