@@ -29,8 +29,9 @@ install_corto () {
     if sudo -n true 2>/dev/null; then
         true
     else
-        echo "Hi! Corto installs files to your /usr/local folder."
-        echo "Please enter your password to continue:"
+        echo
+        echo "Hi! The installer will now copy corto to /usr/local."
+        echo "Please provide $USER's password to continue:"
         sudo true
     fi
 
