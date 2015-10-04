@@ -20,16 +20,22 @@ install_corto () {
 
     UNAME=$(uname)
     ARCHITECTURE=$(uname -p)
-    PREFIX="/usr"
+    PREFIX="/usr/local"
     FILENAME="corto"
     TARBALL_URL="https://s3.amazonaws.com/cortobin/$FILENAME.$UNAME.$ARCHITECTURE.tar.gz"
     INSTALL_TMPDIR="$HOME/.corto/.download"
 
     # Ask for password upfront
-    sudo true
+    if sudo -n true 2>/dev/null; then
+        true
+    else
+        echo "Hi! Corto installs files to your /usr/local folder."
+        echo "Please enter your password to continue:"
+        sudo true
+    fi
 
     echo
-    echo "Hi! Stand by, this will just take a second..."
+    echo "Stand by, this will just take a second..."
     echo
 
     # Check supported OS
@@ -91,7 +97,7 @@ install_corto () {
 
     echo "Yay! Corto $VERSION successfully installed!"
     echo
-    echo "Hit the ground running with:"
+    echo "Now create your first project with:"
     echo
     echo "   $ corto create myApp"
     echo "   $ cd myApp"
