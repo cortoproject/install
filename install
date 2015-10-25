@@ -5,12 +5,13 @@ VERSION="0.2.0-alpha"
 install_corto_fail() {
     >&2 echo "corto: installation failed :("
     rm -rf "$INSTALL_TMPDIR"
-    sudo rm -f "/usr/bin/corto"
-    sudo rm -f "/usr/bin/corto.$VERSION"
-    sudo rm -f "/usr/lib/libcorto.so"
-    sudo rm -f "/usr/lib/libcorto.so.$VERSION"
-    sudo rm -rf "/usr/lib/corto/$VERSION"
-    sudo rm -rf "/usr/include/corto/$VERSION"
+    sudo rm -f "/usr/local/bin/corto"
+    sudo rm -f "/usr/local/bin/corto.$VERSION"
+    sudo rm -f "/usr/local/lib/libcorto.so"
+    sudo rm -f "/usr/local/lib/libcorto.so.$VERSION"
+    sudo rm -rf "/usr/local/lib/corto/$VERSION"
+    sudo rm -rf "/usr/local/include/corto/$VERSION"
+    sudo rm -rf "/usr/local/etc/corto/$VERSION"
     sudo rm -rf "$HOME/.corto"
 }
 
@@ -22,7 +23,7 @@ install_corto () {
     ARCHITECTURE=$(uname -p)
     PREFIX="/usr/local"
     FILENAME="corto"
-    TARBALL_URL="https://s3.amazonaws.com/cortobin/$FILENAME.$UNAME.$ARCHITECTURE.tar.gz"
+    TARBALL_URL="https://raw.githubusercontent.com/cortoproject/packages/master/corto/lang/$UNAME-$ARCHITECTURE/corto.tar.gz"
     INSTALL_TMPDIR="$HOME/.corto/.download"
 
     # Ask for password upfront
@@ -57,24 +58,25 @@ install_corto () {
     if [ "`which cortex`" != "" ]  ; then
         OLD_VERSION=`cortex -v`
         echo "corto: removing your existing cortex distribution ($OLD_VERSION)"
-        sudo rm -f "/usr/bin/cortex"
-        sudo rm -f "/usr/bin/cortex.$OLD_VERSION"
-        sudo rm -f "/usr/lib/libcortex.so"
-        sudo rm -f "/usr/lib/libcortex.so.$OLD_VERSION"
-        sudo rm -rf "/usr/lib/cortex/$OLD_VERSION"
-        sudo rm -rf "/usr/include/cortex/$OLD_VERSION"
+        sudo rm -f "/usr/local/bin/cortex"
+        sudo rm -f "/usr/local/bin/cortex.$OLD_VERSION"
+        sudo rm -f "/usr/local/lib/libcortex.so"
+        sudo rm -f "/usr/local/lib/libcortex.so.$OLD_VERSION"
+        sudo rm -rf "/usr/local/lib/cortex/$OLD_VERSION"
+        sudo rm -rf "/usr/local/include/cortex/$OLD_VERSION"
     fi
 
     # Remove existing version
     if [ "`which corto`" != "" ]  ; then
         OLD_VERSION=`corto -v`
         echo "corto: removing your existing corto distribution ($OLD_VERSION)"
-        sudo rm -f "/usr/bin/corto"
-        sudo rm -f "/usr/bin/corto.$OLD_VERSION"
-        sudo rm -f "/usr/lib/libcorto.so"
-        sudo rm -f "/usr/lib/libcorto.so.$OLD_VERSION"
-        sudo rm -rf "/usr/lib/corto/$OLD_VERSION"
-        sudo rm -rf "/usr/include/corto/$OLD_VERSION"
+        sudo rm -f "/usr/local/bin/corto"
+        sudo rm -f "/usr/local/bin/corto.$OLD_VERSION"
+        sudo rm -f "/usr/local/lib/libcorto.so"
+        sudo rm -f "/usr/local/lib/libcorto.so.$OLD_VERSION"
+        sudo rm -rf "/usr/local/lib/corto/$OLD_VERSION"
+        sudo rm -rf "/usr/local/include/corto/$OLD_VERSION"
+        sudo rm -rf "/usr/local/etc/corto/$OLD_VERSION"
     fi
 
     mkdir -p "$HOME/.corto"
@@ -87,12 +89,12 @@ install_corto () {
     sudo curl --progress-bar --fail "$TARBALL_URL" | tar -xzf - -C "$INSTALL_TMPDIR"
 
     echo "corto: installing files"
-    sudo cp -a "$INSTALL_TMPDIR/." "/usr"
+    sudo cp -a "$INSTALL_TMPDIR/." "/usr/local"
     rm -rf "$INSTALL_TMPDIR"
-    sudo mv "/usr/bin/corto" "/usr/bin/corto.$VERSION"
-    sudo mv "/usr/lib/libcorto.so" "/usr/lib/libcorto.so.$VERSION"
-    sudo ln -s "/usr/bin/corto.$VERSION" "/usr/bin/corto"
-    sudo ln -s "/usr/lib/libcorto.so.$VERSION" "/usr/lib/libcorto.so"
+    sudo mv "/usr/local/bin/corto" "/usr/local/bin/corto.$VERSION"
+    sudo mv "/usr/local/lib/libcorto.so" "/usr/local/lib/libcorto.so.$VERSION"
+    sudo ln -s "/usr/local/bin/corto.$VERSION" "/usr/local/bin/corto"
+    sudo ln -s "/usr/local/lib/libcorto.so.$VERSION" "/usr/local/lib/libcorto.so"
     echo "corto: done!"
     echo
 
