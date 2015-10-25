@@ -1,6 +1,5 @@
 #!/bin/sh
-
-VERSION="0.2.0-alpha"
+VERSION="0.2"
 
 install_corto_fail() {
     >&2 echo "corto: installation failed :("
@@ -13,6 +12,15 @@ install_corto_fail() {
     sudo rm -rf "/usr/local/include/corto/$VERSION"
     sudo rm -rf "/usr/local/etc/corto/$VERSION"
     sudo rm -rf "$HOME/.corto"
+
+    # Get rid of deprecated installation
+    sudo rm -f "/usr/bin/corto"
+    sudo rm -f "/usr/bin/corto.*"
+    sudo rm -f "/usr/lib/libcorto.so"
+    sudo rm -f "/usr/lib/libcorto.so.*"
+    sudo rm -rf "/usr/lib/corto/*"
+    sudo rm -rf "/usr/include/corto/*"
+    sudo rm -rf "/usr/etc/corto/*"    
 }
 
 install_corto () {
@@ -58,18 +66,22 @@ install_corto () {
     if [ "`which cortex`" != "" ]  ; then
         OLD_VERSION=`cortex -v`
         echo "corto: removing your existing cortex distribution ($OLD_VERSION)"
-        sudo rm -f "/usr/local/bin/cortex"
-        sudo rm -f "/usr/local/bin/cortex.$OLD_VERSION"
-        sudo rm -f "/usr/local/lib/libcortex.so"
-        sudo rm -f "/usr/local/lib/libcortex.so.$OLD_VERSION"
-        sudo rm -rf "/usr/local/lib/cortex/$OLD_VERSION"
-        sudo rm -rf "/usr/local/include/cortex/$OLD_VERSION"
+        sudo rm -f "/usr/bin/cortex"
+        sudo rm -f "/usr/bin/cortex.$OLD_VERSION"
+        sudo rm -f "/usr/lib/libcortex.so"
+        sudo rm -f "/usr/lib/libcortex.so.$OLD_VERSION"
+        sudo rm -rf "/usr/lib/cortex/$OLD_VERSION"
+        sudo rm -rf "/usr/include/cortex/$OLD_VERSION"
     fi
 
-    # Remove existing version
+    # Remove existing versions
     if [ "`which corto`" != "" ]  ; then
-        OLD_VERSION=`corto -v`
-        echo "corto: removing your existing corto distribution ($OLD_VERSION)"
+        if [ "`corto -v`" != "0.2.0-alpha" ] ; then
+            OLD_VERSION=`corto --minor`
+        else
+            OLD_VERSION=`corto -v`
+        fi
+        echo "corto: removing your existing corto distribution ("`corto -v`")"
         sudo rm -f "/usr/local/bin/corto"
         sudo rm -f "/usr/local/bin/corto.$OLD_VERSION"
         sudo rm -f "/usr/local/lib/libcorto.so"
@@ -98,7 +110,7 @@ install_corto () {
     echo "corto: done!"
     echo
 
-    echo "Yay! Corto $VERSION successfully installed!"
+    echo "Corto "`corto -v`" successfully installed!"
     echo
     echo "Now create your first project with:"
     echo
