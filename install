@@ -31,22 +31,8 @@ install_corto () {
     ARCHITECTURE=$(uname -p)
     PREFIX="/usr/local"
     FILENAME="corto"
-    TARBALL_URL="https://raw.githubusercontent.com/cortoproject/packages/master/corto/lang/$UNAME-$ARCHITECTURE/corto.tar.gz"
+    TARBALL_URL="https://raw.githubusercontent.com/cortoproject/packages/master/corto/$UNAME-$ARCHITECTURE/corto.tar.gz"
     INSTALL_TMPDIR="$HOME/.corto/.download"
-
-    # Ask for password upfront
-    if sudo -n true 2>/dev/null; then
-        true
-    else
-        echo
-        echo "Hi! The installer will now copy corto to /usr/local."
-        echo "Please provide $USER's password to continue:"
-        sudo true
-    fi
-
-    echo
-    echo "Stand by, this will just take a second..."
-    echo
 
     # Check supported OS
     if [ "$UNAME" != "Linux" -a "$UNAME" != "Darwin" ] ; then
@@ -59,6 +45,20 @@ install_corto () {
           exit 1
         fi
     fi
+
+    # Ask for password upfront
+    if sudo -n true 2>/dev/null; then
+        true
+    else
+        echo
+        echo "Hi! The installer will install corto to /usr/local."
+        echo "Please provide the password for $USER:"
+        sudo true
+    fi
+
+    echo
+    echo "Stand by, this will just take a second..."
+    echo
 
     trap install_corto_fail EXIT
 
