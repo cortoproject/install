@@ -104,9 +104,7 @@ install_corto () {
     sudo cp -a "$INSTALL_TMPDIR/." "/usr/local"
     rm -rf "$INSTALL_TMPDIR"
     sudo mv "/usr/local/bin/corto" "/usr/local/bin/corto.$VERSION"
-    sudo mv "/usr/local/lib/libcorto.so" "/usr/local/lib/libcorto.so.$VERSION"
     sudo ln -s "/usr/local/bin/corto.$VERSION" "/usr/local/bin/corto"
-    sudo ln -s "/usr/local/lib/libcorto.so.$VERSION" "/usr/local/lib/libcorto.so"
     echo "corto: done!"
     echo
 
