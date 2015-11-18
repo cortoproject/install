@@ -20,7 +20,7 @@ install_corto_fail() {
     sudo rm -f "/usr/lib/libcorto.so.*"
     sudo rm -rf "/usr/lib/corto/*"
     sudo rm -rf "/usr/include/corto/*"
-    sudo rm -rf "/usr/etc/corto/*"    
+    sudo rm -rf "/usr/etc/corto/*"
 }
 
 install_corto () {
@@ -28,10 +28,10 @@ install_corto () {
     set -u
 
     UNAME=$(uname)
-    ARCHITECTURE=$(uname -p)
+    ARCHITECTURE=$(uname -m)
     PREFIX="/usr/local"
     FILENAME="corto"
-    TARBALL_URL="https://raw.githubusercontent.com/cortoproject/packages/master/corto/$UNAME-$ARCHITECTURE/corto.tar.gz"
+    TARBALL_URL="https://raw.githubusercontent.com/cortoproject/binaries/packages/master/corto/$UNAME-$ARCHITECTURE/corto.tar.gz"
     INSTALL_TMPDIR="$HOME/.corto/.download"
 
     # Check supported OS
