@@ -31,7 +31,7 @@ install_corto () {
     ARCHITECTURE=$(uname -m)
     PREFIX="/usr/local"
     FILENAME="corto"
-    TARBALL_URL="https://raw.githubusercontent.com/cortoproject/binaries/packages/master/corto/$UNAME-$ARCHITECTURE/corto.tar.gz"
+    TARBALL_URL="https://raw.githubusercontent.com/cortoproject/binaries/master/packages/corto/$UNAME-$ARCHITECTURE/corto.tar.gz"
     INSTALL_TMPDIR="$HOME/.corto/.download"
 
     # Check supported OS
@@ -61,6 +61,12 @@ install_corto () {
     echo
 
     trap install_corto_fail EXIT
+
+    echo "corto: downloading distribution"
+    rm -rf "$INSTALL_TMPDIR"
+    mkdir -p "$INSTALL_TMPDIR"
+
+    sudo curl --progress-bar --fail "$TARBALL_URL" | tar -xzf - -C "$INSTALL_TMPDIR"
 
     # Remove existing cortex version
     if [ "`which cortex`" != "" ]  ; then
@@ -93,12 +99,6 @@ install_corto () {
 
     mkdir -p "$HOME/.corto"
     sudo mkdir -p "$PREFIX/lib/corto/$VERSION"
-
-    echo "corto: downloading distribution"
-    rm -rf "$INSTALL_TMPDIR"
-    mkdir -p "$INSTALL_TMPDIR"
-
-    sudo curl --progress-bar --fail "$TARBALL_URL" | tar -xzf - -C "$INSTALL_TMPDIR"
 
     echo "corto: installing files"
     sudo cp -a "$INSTALL_TMPDIR/." "/usr/local"
