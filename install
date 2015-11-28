@@ -46,32 +46,29 @@ install_corto () {
         fi
     fi
 
-    # Ask for password upfront
-    if sudo -n true 2>/dev/null; then
-        true
-    else
-        echo
-        echo "Hi! The installer will install corto to /usr/local."
-        echo "This may prompt for your user password:"
-        sudo true
-    fi
-
-    echo
-    echo "Stand by, this will just take a second..."
-    echo
-
     trap install_corto_fail EXIT
 
-    echo "corto: downloading distribution"
+    echo
+    echo "Hi! Downloading Corto distribution..."
     rm -rf "$INSTALL_TMPDIR"
     mkdir -p "$INSTALL_TMPDIR"
 
     sudo curl --progress-bar --fail "$TARBALL_URL" | tar -xzf - -C "$INSTALL_TMPDIR"
 
+    # Ask for password upfront
+    if sudo -n true 2>/dev/null; then
+        true
+    else
+        echo
+        echo "Corto will now be installed to /usr/local for easy access."
+        echo "This may prompt for your password."
+        sudo true
+    fi
+
     # Remove existing cortex version
     if [ "`which cortex`" != "" ]  ; then
         OLD_VERSION=`cortex -v`
-        echo "corto: removing your existing cortex distribution ($OLD_VERSION)"
+        echo "Removing your existing cortex installation ($OLD_VERSION)"
         sudo rm -f "/usr/bin/cortex"
         sudo rm -f "/usr/bin/cortex.$OLD_VERSION"
         sudo rm -f "/usr/lib/libcortex.so"
@@ -87,7 +84,7 @@ install_corto () {
         else
             OLD_VERSION=`corto -v`
         fi
-        echo "corto: removing your existing corto distribution ("`corto -v`")"
+        echo "Removing your existing corto installation ("`corto -v`")"
         sudo rm -f "/usr/local/bin/corto"
         sudo rm -f "/usr/local/bin/corto.$OLD_VERSION"
         sudo rm -f "/usr/local/lib/libcorto.so"
@@ -100,12 +97,11 @@ install_corto () {
     mkdir -p "$HOME/.corto"
     sudo mkdir -p "$PREFIX/lib/corto/$VERSION"
 
-    echo "corto: installing files"
+    echo "Installing files..."
     sudo cp -a "$INSTALL_TMPDIR/." "/usr/local"
     rm -rf "$INSTALL_TMPDIR"
     sudo mv "/usr/local/bin/corto" "/usr/local/bin/corto.$VERSION"
     sudo ln -s "/usr/local/bin/corto.$VERSION" "/usr/local/bin/corto"
-    echo "corto: done!"
     echo
 
     echo "Corto "`corto -v`" successfully installed!"
@@ -115,6 +111,9 @@ install_corto () {
     echo "   $ corto create myApp"
     echo "   $ cd myApp"
     echo "   $ corto run"
+    echo
+    echo "Or check out our docs at:"
+    echo "   http://www.corto.io/doc.html"
     echo
 
     trap - EXIT
