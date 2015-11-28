@@ -52,7 +52,7 @@ install_corto () {
     else
         echo
         echo "Hi! The installer will install corto to /usr/local."
-        echo "Please provide the password for $USER:"
+        echo "This may prompt for your user password:"
         sudo true
     fi
 
