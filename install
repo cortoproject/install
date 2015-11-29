@@ -2,7 +2,21 @@
 VERSION="0.2"
 
 install_corto_fail() {
-    >&2 echo "corto: installation failed :("
+    echo
+    >&2 echo "Installation failed :-("
+
+    # If asking for password failed, don't ask again
+    if sudo -n true 2>/dev/null; then
+        true
+    else
+        echo "  If you do not have sudo privileges, or don't want to install"
+        echo "  software to /usr/local, consider building Corto from source."
+        echo
+        echo "  Our code is on GitHub: https://www.github.com/cortoproject/corto"
+        echo
+        exit -1
+    fi
+
     rm -rf "$INSTALL_TMPDIR"
     sudo rm -f "/usr/local/bin/corto"
     sudo rm -f "/usr/local/bin/corto.$VERSION"
@@ -21,6 +35,13 @@ install_corto_fail() {
     sudo rm -rf "/usr/lib/corto/*"
     sudo rm -rf "/usr/include/corto/*"
     sudo rm -rf "/usr/etc/corto/*"
+
+    echo "  Maybe your internet connection failed, please retry ! If"
+    echo "  the issue persists, maybe there is a problem with your platform. In"
+    echo "  that case, it would be awesome if you can create an issue on"
+    echo "  http://www.github.com/cortoproject/install! Please provide the output"
+    echo "  of the installer, together with the output of 'uname' and 'uname -m'."
+    echo
 }
 
 install_corto () {
@@ -53,7 +74,7 @@ install_corto () {
     rm -rf "$INSTALL_TMPDIR"
     mkdir -p "$INSTALL_TMPDIR"
 
-    sudo curl --progress-bar --fail "$TARBALL_URL" | tar -xzf - -C "$INSTALL_TMPDIR"
+    curl --progress-bar --fail "$TARBALL_URL" | tar -xzf - -C "$INSTALL_TMPDIR"
 
     # Ask for password upfront
     if sudo -n true 2>/dev/null; then
@@ -63,6 +84,7 @@ install_corto () {
         echo "Corto will now be installed to /usr/local for easy access."
         echo "This may prompt for your password."
         sudo true
+        echo
     fi
 
     # Remove existing cortex version
