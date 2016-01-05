@@ -20,18 +20,20 @@ install_corto_fail() {
     rm -rf "$INSTALL_TMPDIR"
     sudo rm -f "/usr/local/bin/corto"
     sudo rm -f "/usr/local/bin/corto.$VERSION"
-    sudo rm -f "/usr/local/lib/libcorto.so"
-    sudo rm -f "/usr/local/lib/libcorto.so.$VERSION"
+    sudo rm -f "/usr/local/lib/corto/0.2/packages/corto/libcorto.so"
+    sudo rm -f "/usr/local/lib/corto/0.2/packages/corto/libcorto.so.$VERSION"
     sudo rm -rf "/usr/local/lib/corto/$VERSION"
     sudo rm -rf "/usr/local/include/corto/$VERSION"
     sudo rm -rf "/usr/local/etc/corto/$VERSION"
     sudo rm -rf "$HOME/.corto"
 
-    # Get rid of deprecated installation
+    # Get rid of old installations
     sudo rm -f "/usr/bin/corto"
     sudo rm -f "/usr/bin/corto.*"
     sudo rm -f "/usr/lib/libcorto.so"
     sudo rm -f "/usr/lib/libcorto.so.*"
+    sudo rm -f "/usr/local/lib/libcorto.so"
+    sudo rm -f "/usr/local/lib/libcorto.so.$VERSION"
     sudo rm -rf "/usr/lib/corto/*"
     sudo rm -rf "/usr/include/corto/*"
     sudo rm -rf "/usr/etc/corto/*"
@@ -53,7 +55,7 @@ install_corto () {
     PREFIX="/usr/local"
     FILENAME="corto"
     TARBALL_URL="https://raw.githubusercontent.com/cortoproject/binaries/master/packages/corto/$UNAME-$ARCHITECTURE/corto.tar.gz"
-    INSTALL_TMPDIR="$HOME/.corto/.download"
+    INSTALL_TMPDIR="$HOME/tmp"
 
     # Check supported OS
     if [ "$UNAME" != "Linux" -a "$UNAME" != "Darwin" ] ; then
@@ -107,6 +109,7 @@ install_corto () {
             OLD_VERSION=`corto -v`
         fi
         echo "Removing your existing corto installation ("`corto -v`")"
+        sudo corto uninstall
         sudo rm -f "/usr/local/bin/corto"
         sudo rm -f "/usr/local/bin/corto.$OLD_VERSION"
         sudo rm -f "/usr/local/lib/libcorto.so"
@@ -126,7 +129,7 @@ install_corto () {
     sudo ln -s "/usr/local/bin/corto.$VERSION" "/usr/local/bin/corto"
     echo
 
-    echo "Corto "`corto -v`" successfully installed!"
+    echo "Corto "`/usr/local/bin/corto -v`" successfully installed!"
     echo
     echo "Now create your first project with:"
     echo
