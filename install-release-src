@@ -145,12 +145,12 @@ install_corto () {
     echo
     echo "Corto "`/usr/local/bin/corto --minor`" successfully installed!"
     echo
-    echo "You have installed a development version. This means that corto has been"
-    echo "built with lots of features that spot errors early on, awesome! The downside"
-    echo "is that all this checking slows things down quite a bit. We recommend to"
-    echo "use a release version when you want to deploy your app. To install a"
-    echo "release version from source, do:"
-    echo "   $ curl https://corto.io/install-release-src | sh"
+    echo "You have installed a release version. This means that you just built"
+    echo "the fastest & smallest version of corto, awesome! The downside"
+    echo "of a release build is that there is very little error checking. We"
+    echo "recommend a debug version when you are developing. To install a"
+    echo "debug version from source, do:"
+    echo "   $ curl https://corto.io/install-debug-src | sh"
     echo
     echo "Get started by creating your first project! Simply do:"
     echo
