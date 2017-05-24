@@ -72,7 +72,7 @@ install_corto () {
     fi
 
     if [ "$UNAME" = "Linux" ] ; then
-        sudo apt-get -y install git rake libffi-dev libxml2-dev flex bison libcurl4-openssl-dev
+        sudo apt-get -y install git rake libffi-dev libxml2-dev flex bison libcurl4-openssl-dev libssl-dev
     elif [ "$UNAME" = "Darwin" ] ; then
         sudo xcode-select --install
     fi
@@ -155,8 +155,7 @@ install_corto () {
     echo "Get started by creating your first project! Simply do:"
     echo
     echo "   $ corto create myApp"
-    echo "   $ cd myApp"
-    echo "   $ corto run"
+    echo "   $ myApp/myApp"
     echo
     echo "Make sure to also check out our getting started guide at:"
     echo "   https://corto.io/doc/guide/guide.html#Corto_Essentials_Introduction"
