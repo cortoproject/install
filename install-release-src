@@ -72,7 +72,7 @@ install_corto () {
     fi
 
     if [ "$UNAME" = "Linux" ] ; then
-        sudo apt-get -y install git rake libffi-dev libxml2-dev flex bison libcurl4-openssl-dev libssl-dev
+        sudo apt-get -y install git build-essential rake libffi-dev libxml2-dev flex bison libcurl4-openssl-dev libssl-dev
     elif [ "$UNAME" = "Darwin" ] ; then
         sudo xcode-select --install
     fi
