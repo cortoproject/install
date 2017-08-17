@@ -1,9 +1,10 @@
-#!/bin/sh
-VERSION="0.2"
+#!/bin/bash
+VERSION="1.0"
 
 install_corto_fail() {
     echo
     >&2 echo "Installation failed :-("
+    exit
 
     # If asking for password failed, don't ask again
     if sudo -n true 2>/dev/null; then
@@ -20,6 +21,7 @@ install_corto_fail() {
     rm -rf "$INSTALL_TMPDIR"
     sudo rm -f "/usr/local/bin/corto"
     sudo rm -f "/usr/local/bin/corto.$VERSION"
+    sudo rm -rf "/usr/local/bin/cortobin"
     sudo rm -f "/usr/local/lib/corto/0.2/packages/corto/libcorto.so"
     sudo rm -f "/usr/local/lib/corto/0.2/packages/corto/libcorto.so.$VERSION"
     sudo rm -rf "/usr/local/lib/corto/$VERSION"
@@ -30,6 +32,7 @@ install_corto_fail() {
     # Get rid of old installations
     sudo rm -f "/usr/bin/corto"
     sudo rm -f "/usr/bin/corto.*"
+    sudo rm -rf "/usr/local/bin/cortobin"
     sudo rm -f "/usr/lib/libcorto.so"
     sudo rm -f "/usr/lib/libcorto.so.*"
     sudo rm -f "/usr/local/lib/libcorto.so"
@@ -46,16 +49,28 @@ install_corto_fail() {
     echo
 }
 
+clone_repo() {
+    if [ ! -d $1 ] ;
+    then
+        git clone https://github.com/cortoproject/${1}.git
+    else
+        cd $1
+        git fetch origin
+        git reset --hard origin/master
+        git clean -xdf
+        cd ..
+    fi
+}
+
 install_corto () {
-    set -e
+    #set -e
     set -u
 
     UNAME=$(uname)
     ARCHITECTURE=$(uname -m)
     PREFIX="/usr/local"
     FILENAME="corto"
-    TARBALL_URL="https://raw.githubusercontent.com/cortoproject/binaries/master/packages/corto/$UNAME-$ARCHITECTURE/corto.tar.gz"
-    INSTALL_TMPDIR="$HOME/tmp"
+    INSTALL_TMPDIR="corto-src"
 
     # Check supported OS
     if [ "$UNAME" != "Linux" -a "$UNAME" != "Darwin" ] ; then
@@ -69,76 +84,70 @@ install_corto () {
         fi
     fi
 
+    if [ "$UNAME" = "Linux" ] ; then
+        sudo apt-get -y install git build-essential rake libffi-dev libxml2-dev flex bison libcurl4-openssl-dev libssl-dev
+    elif [ "$UNAME" = "Darwin" ] ; then
+        sudo xcode-select --install
+    fi
+
     trap install_corto_fail EXIT
 
     echo
-    echo "Hi! Downloading Corto distribution..."
-    rm -rf "$INSTALL_TMPDIR"
+    echo "Hi! Downloading Corto package repositories..."
     mkdir -p "$INSTALL_TMPDIR"
 
-    curl --progress-bar --fail "$TARBALL_URL" | tar -xzf - -C "$INSTALL_TMPDIR"
+    cd $INSTALL_TMPDIR
+    clone_repo "corto"
+    clone_repo "c-binding"
+    clone_repo "json"
+    clone_repo "xml"
+    clone_repo "vm"
+    clone_repo "ic"
+    clone_repo "corto-language"
+    clone_repo "test"
+    clone_repo "cortodoc"
+    clone_repo "x"
+    clone_repo "web"
+    clone_repo "httprouter"
+    clone_repo "rest"
+    clone_repo "ws"
+    clone_repo "admin"
 
-    # Ask for password upfront
-    if sudo -n true 2>/dev/null; then
-        true
-    else
-        echo
-        echo "Corto will now be installed to /usr/local for easy access."
-        echo "This may prompt for your password."
-        sudo true
-        echo
-    fi
-
-    # Remove existing cortex version
-    if [ "`which cortex`" != "" ]  ; then
-        OLD_VERSION=`cortex -v`
-        echo "Removing your existing cortex installation ($OLD_VERSION)"
-        sudo rm -f "/usr/bin/cortex"
-        sudo rm -f "/usr/bin/cortex.$OLD_VERSION"
-        sudo rm -f "/usr/lib/libcortex.so"
-        sudo rm -f "/usr/lib/libcortex.so.$OLD_VERSION"
-        sudo rm -rf "/usr/lib/cortex/$OLD_VERSION"
-        sudo rm -rf "/usr/include/cortex/$OLD_VERSION"
-    fi
-
-    # Remove existing versions
-    if [ "`which corto`" != "" ]  ; then
-        if [ "`corto -v`" != "0.2.0-alpha" ] ; then
-            OLD_VERSION=`corto --minor`
-        else
-            OLD_VERSION=`corto -v`
-        fi
-        echo "Removing your existing corto installation ("`corto -v`")"
-        sudo corto uninstall
-        sudo rm -f "/usr/local/bin/corto"
-        sudo rm -f "/usr/local/bin/corto.$OLD_VERSION"
-        sudo rm -f "/usr/local/lib/libcorto.so"
-        sudo rm -f "/usr/local/lib/libcorto.so.$OLD_VERSION"
-        sudo rm -rf "/usr/local/lib/corto/$OLD_VERSION"
-        sudo rm -rf "/usr/local/include/corto/$OLD_VERSION"
-        sudo rm -rf "/usr/local/etc/corto/$OLD_VERSION"
-    fi
-
-    mkdir -p "$HOME/.corto"
-    sudo mkdir -p "$PREFIX/lib/corto/$VERSION"
-
-    echo "Installing files..."
-    sudo cp -a "$INSTALL_TMPDIR/." "/usr/local"
-    rm -rf "$INSTALL_TMPDIR"
-    sudo mv "/usr/local/bin/corto" "/usr/local/bin/corto.$VERSION"
-    sudo ln -s "/usr/local/bin/corto.$VERSION" "/usr/local/bin/corto"
+    # Start build
+    echo "Building corto library and packages"
+    cd corto
+    . ./configure
+    rake
+    cd ..
     echo
+    echo "Installing corto packages"
+    corto build c-binding json
+    corto build xml vm ic corto-language test cortodoc x web httprouter rest ws admin
 
-    echo "Corto "`/usr/local/bin/corto -v`" successfully installed!"
     echo
-    echo "Now create your first project with:"
+    corto --logo
+    echo
+    echo "Corto "`~/.corto/bin/corto --minor`" successfully built!"
+    echo
+    echo "You have built a development version. This means that corto has been"
+    echo "built with lots of features that spot errors early on, awesome! The downside"
+    echo "is that all this checking slows things down quite a bit. We recommend to"
+    echo "use a release version when you want to deploy your app. To build a"
+    echo "release version from source, do:"
+    echo
+    echo "   $ curl https://corto.io/build-release | sh"
+    echo
+    echo -e "\033[0;33mBefore using corto, run this command to set your shell environment:\033[0;49m"
+    echo
+    echo "   $ source corto-src/corto/configure"
+    echo
+    echo "Get started by creating your first project! Simply do:"
     echo
     echo "   $ corto create myApp"
-    echo "   $ cd myApp"
-    echo "   $ corto run"
+    echo "   $ myApp/myApp"
     echo
-    echo "Or check out our docs at:"
-    echo "   http://www.corto.io/doc.html"
+    echo "Make sure to also check out our getting started guide at:"
+    echo "   https://corto.io/doc/guide/guide.html#Corto_Essentials_Introduction"
     echo
 
     trap - EXIT
