@@ -64,7 +64,7 @@ build_repo() {
     cd $1
     if [ -f "configure" ];
     then
-        source configure
+        . ./configure
     fi
     if [ -f "project.json" ];
     then
