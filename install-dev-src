@@ -47,8 +47,8 @@ install_corto_fail() {
     echo
 }
 
-clone_repo() {
-    if [ ! -d $1 ] ;
+build_repo() {
+    if [ ! -d $1 ];
     then
         git clone https://github.com/cortoproject/${1}.git
     else
@@ -58,10 +58,21 @@ clone_repo() {
         git clean -xdf
         cd ..
     fi
+    cd $1
+    if [ -f "configure" ];
+    then
+        source configure
+    fi
+    if [ -f "project.json" ];
+    then
+        corto rakefile
+    fi
+    rake
+    cd ..
 }
 
 install_corto () {
-    #set -e
+    set -e
     set -u
 
     UNAME=$(uname)
@@ -95,22 +106,42 @@ install_corto () {
     mkdir -p "$INSTALL_TMPDIR"
 
     cd $INSTALL_TMPDIR
-    clone_repo "corto"
-    clone_repo "c-binding"
-    clone_repo "json"
-    clone_repo "xml"
-    clone_repo "vm"
-    clone_repo "ic"
-    clone_repo "corto-language"
-    clone_repo "test"
-    clone_repo "cortodoc"
-    clone_repo "filestore"
-    clone_repo "x"
-    clone_repo "web"
-    clone_repo "httprouter"
-    clone_repo "rest"
-    clone_repo "ws"
-    clone_repo "admin"
+    build_repo "corto"
+    build_repo "argparse"
+    build_repo "driver-tool-locate"
+    build_repo "driver-tool-rakefile"
+    build_repo "driver-tool-build"
+    build_repo "driver-tool-default"
+    build_repo "driver-tool-clean"
+    build_repo "driver-tool-rebuild"
+    build_repo "driver-tool-install"
+    build_repo "driver-tool-uninstall"
+    build_repo "driver-tool-add"
+    build_repo "driver-tool-remove"
+    build_repo "driver-tool-create"
+    build_repo "driver-tool-tar"
+    build_repo "driver-tool-untar"
+    build_repo "driver-tool-list"
+    build_repo "driver-tool-run"
+    build_repo "cdiff"
+    build_repo "g"
+    build_repo "driver-tool-pp"
+    build_repo "c-binding"
+    build_repo "json"
+    build_repo "xml"
+    build_repo "driver-tool-sh"
+    build_repo "vm"
+    build_repo "ic"
+    build_repo "corto-language"
+    build_repo "test"
+    build_repo "driver-tool-test"
+    build_repo "cortodoc"
+    build_repo "x"
+    build_repo "web"
+    build_repo "httprouter"
+    build_repo "rest"
+    build_repo "ws"
+    build_repo "admin"
 
     # Ask for password upfront
     if sudo -n true 2>/dev/null; then
@@ -137,17 +168,43 @@ install_corto () {
         sudo rm -rf "/usr/local/etc/corto/$OLD_VERSION"
     fi
 
-    # Start build
-    echo "Installing corto library and packages"
-    cd corto
-    . ./configure
-    rake
-    corto install
-    cd ..
-    echo
-    echo "Installing corto packages"
-    corto install c-binding json
-    corto install xml vm ic corto-language test cortodoc filestore x web httprouter rest ws admin
+    # Start installing
+    echo "Installing..."
+
+    # Bootstrap-install packages required to do install
+    corto install "corto" "argparse" "driver-tool-locate" "driver-tool-rakefile" "driver-tool-build" "driver-tool-install"
+
+    # Install ordinary packages
+    corto install "driver-tool-default"
+    corto install "driver-tool-clean"
+    corto install "driver-tool-rebuild"
+    corto install "driver-tool-uninstall"
+    corto install "driver-tool-add"
+    corto install "driver-tool-remove"
+    corto install "driver-tool-create"
+    corto install "driver-tool-tar"
+    corto install "driver-tool-untar"
+    corto install "driver-tool-list"
+    corto install "driver-tool-run"
+    corto install "cdiff"
+    corto install "g"
+    corto install "driver-tool-pp"
+    corto install "c-binding"
+    corto install "json"
+    corto install "xml"
+    corto install "driver-tool-sh"
+    corto install "vm"
+    corto install "ic"
+    corto install "corto-language"
+    corto install "test"
+    corto install "driver-tool-test"
+    corto install "cortodoc"
+    corto install "x"
+    corto install "web"
+    corto install "httprouter"
+    corto install "rest"
+    corto install "ws"
+    corto install "admin"
 
     echo
     corto --logo

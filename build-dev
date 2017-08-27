@@ -1,4 +1,5 @@
 #!/bin/bash
+
 VERSION="1.0"
 
 install_corto_fail() {
@@ -49,8 +50,8 @@ install_corto_fail() {
     echo
 }
 
-clone_repo() {
-    if [ ! -d $1 ] ;
+build_repo() {
+    if [ ! -d $1 ];
     then
         git clone https://github.com/cortoproject/${1}.git
     else
@@ -60,10 +61,21 @@ clone_repo() {
         git clean -xdf
         cd ..
     fi
+    cd $1
+    if [ -f "configure" ];
+    then
+        source configure
+    fi
+    if [ -f "project.json" ];
+    then
+        corto rakefile
+    fi
+    rake
+    cd ..
 }
 
 install_corto () {
-    #set -e
+    set -e
     set -u
 
     UNAME=$(uname)
@@ -85,7 +97,7 @@ install_corto () {
     fi
 
     if [ "$UNAME" = "Linux" ] ; then
-        sudo apt-get -y install git build-essential rake libffi-dev libxml2-dev flex bison libcurl4-openssl-dev libssl-dev
+        sudo apt-get -y --force-yes install git build-essential rake libffi-dev libxml2-dev flex bison libcurl4-openssl-dev libssl-dev
     elif [ "$UNAME" = "Darwin" ] ; then
         sudo xcode-select --install
     fi
@@ -97,32 +109,42 @@ install_corto () {
     mkdir -p "$INSTALL_TMPDIR"
 
     cd $INSTALL_TMPDIR
-    clone_repo "corto"
-    clone_repo "c-binding"
-    clone_repo "json"
-    clone_repo "xml"
-    clone_repo "vm"
-    clone_repo "ic"
-    clone_repo "corto-language"
-    clone_repo "test"
-    clone_repo "cortodoc"
-    clone_repo "x"
-    clone_repo "web"
-    clone_repo "httprouter"
-    clone_repo "rest"
-    clone_repo "ws"
-    clone_repo "admin"
-
-    # Start build
-    echo "Building corto library and packages"
-    cd corto
-    . ./configure
-    rake
-    cd ..
-    echo
-    echo "Installing corto packages"
-    corto build c-binding json
-    corto build xml vm ic corto-language test cortodoc x web httprouter rest ws admin
+    build_repo "corto"
+    build_repo "argparse"
+    build_repo "driver-tool-locate"
+    build_repo "driver-tool-rakefile"
+    build_repo "driver-tool-build"
+    build_repo "driver-tool-default"
+    build_repo "driver-tool-clean"
+    build_repo "driver-tool-rebuild"
+    build_repo "driver-tool-install"
+    build_repo "driver-tool-uninstall"
+    build_repo "driver-tool-add"
+    build_repo "driver-tool-remove"
+    build_repo "driver-tool-create"
+    build_repo "driver-tool-tar"
+    build_repo "driver-tool-untar"
+    build_repo "driver-tool-list"
+    build_repo "driver-tool-run"
+    build_repo "cdiff"
+    build_repo "g"
+    build_repo "driver-tool-pp"
+    build_repo "c-binding"
+    build_repo "json"
+    build_repo "xml"
+    build_repo "driver-tool-sh"
+    build_repo "vm"
+    build_repo "ic"
+    build_repo "corto-language"
+    build_repo "test"
+    build_repo "driver-tool-test"
+    build_repo "cortodoc"
+    build_repo "x"
+    build_repo "web"
+    build_repo "httprouter"
+    build_repo "rest"
+    build_repo "ws"
+    build_repo "admin"
 
     echo
     corto --logo
