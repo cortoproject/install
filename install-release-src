@@ -96,7 +96,10 @@ install_corto () {
     if [ "$UNAME" = "Linux" ] ; then
         sudo apt-get -y install git build-essential rake libffi-dev libxml2-dev flex bison libcurl4-openssl-dev libssl-dev
     elif [ "$UNAME" = "Darwin" ] ; then
-        sudo xcode-select --install
+        xcode-select -p
+        rc=$?; if [ $rc -eq 2 ]; then
+            sudo xcode-select --install
+        fi
     fi
 
     trap install_corto_fail EXIT
