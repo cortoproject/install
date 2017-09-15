@@ -130,8 +130,10 @@ install_corto () {
     build_repo "g"
     build_repo "driver-tool-pp"
     build_repo "c-binding"
-    build_repo "json"
-    build_repo "xml"
+    build_repo "driver-json-fmt"
+    build_repo "driver-json-ext"
+    build_repo "driver-xml-fmt"
+    build_repo "driver-xml-ext"
     build_repo "driver-tool-sh"
     build_repo "vm"
     build_repo "ic"
@@ -144,7 +146,8 @@ install_corto () {
     build_repo "httprouter"
     build_repo "rest"
     build_repo "ws"
-    build_repo "admin"
+    build_repo "ui"
+    build_repo "driver-mnt-filestore"
 
     # Ask for password upfront
     if sudo -n true 2>/dev/null; then
@@ -192,8 +195,10 @@ install_corto () {
     corto install --release "g"
     corto install --release "driver-tool-pp"
     corto install --release "c-binding"
-    corto install --release "json"
-    corto install --release "xml"
+    corto install --release "driver-json-fmt"
+    corto install --release "driver-json-ext"
+    corto install --release "driver-xml-fmt"
+    corto install --release "driver-xml-ext"
     corto install --release "driver-tool-sh"
     corto install --release "vm"
     corto install --release "ic"
@@ -206,7 +211,8 @@ install_corto () {
     corto install --release "httprouter"
     corto install --release "rest"
     corto install --release "ws"
-    corto install --release "admin"
+    corto install --release "ui"
+    corto install --release "driver-mnt-filestore"
 
     echo
     corto --logo
