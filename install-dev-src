@@ -52,16 +52,10 @@ install_corto () {
 
     # Remove existing (older) versions
     if [ "`which corto`" != "" ]  ; then
-        echo "removing existing corto installations"
-        sudo rm -f "/usr/local/bin/bake"
-        sudo rm -f "/usr/local/bin/corto"
-        sudo rm -f "/usr/local/bin/corto.*"
-        sudo rm -rf "/usr/local/bin/cortobin"
-        sudo rm -f "/usr/local/lib/libcorto.so"
-        sudo rm -f "/usr/local/lib/libcorto.so.*"
-        sudo rm -rf "/usr/local/lib/corto/*"
-        sudo rm -rf "/usr/local/include/corto/*"
-        sudo rm -rf "/usr/local/etc/corto/*"
+        echo "removing existing corto installation"
+        sudo rm -rf ~/.corto/bin ~/.corto/lib ~/.corto/etc
+        sudo rm -f /usr/local/bin/bake /usr/local/bin/corto /usr/local/bin/corto.* /usr/local/lib/libcorto.so /usr/local/lib/libcorto.so.*
+        sudo rm -rf /usr/local/bin/cortobin /usr/local/lib/corto/* /usr/local/include/corto/* /usr/local/etc/corto/*
     fi
 
     # Create 'src' directory in .corto
