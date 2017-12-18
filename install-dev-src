@@ -39,9 +39,13 @@ install_corto () {
     if [ "$UNAME" = "Linux" ] ; then
         sudo apt-get -y install git build-essential libffi-dev libxml2-dev flex bison libcurl4-openssl-dev libssl-dev
     elif [ "$UNAME" = "Darwin" ] ; then
-        xcode-select -p
-        rc=$?; if [ $rc -eq 2 ]; then
-            sudo xcode-select --install
+        pkgutil --pkg-info=com.apple.pkg.CLTools_Executables
+        rc=$?; if [ $rc -eq 1 ]; then
+            echo "Looks like Xcode command-line tools are not installed. Run:"
+            echo "  sudo xcode-select --install"
+            echo
+            echo "Then try installing corto again!"
+            exit -1
         fi
     fi
 
