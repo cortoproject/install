@@ -1,0 +1,125 @@
+#!/bin/bash
+install_corto_fail() {
+    echo "Installation failed :("
+}
+
+clone_repo() {
+    if [ ! -d $1 ];
+    then
+        git clone https://github.com/cortoproject/${1}.git
+    else
+        cd $1
+        git fetch origin
+        git reset --hard origin/master
+        git clean -xdf
+        cd ..
+    fi
+}
+
+install_corto () {
+    set -e
+    set -u
+
+    UNAME=$(uname)
+    ARCHITECTURE=$(uname -m)
+    INSTALL_TMPDIR="corto-src"
+
+    # Check supported OS
+    if [ "$UNAME" != "Linux" -a "$UNAME" != "Darwin" ] ; then
+        >&2 echo "Sorry, this OS is not supported yet!"
+        exit 1
+    fi
+    if [ "$UNAME" = "Darwin" ] ; then
+        if [ "i386" != "$(uname -p)" -o "1" != "$(sysctl -n hw.cpu64bit_capable 2>/dev/null || echo 0)" ] ; then
+          >&2 echo "corto: only 64-bit Intel processors are supported at this time!"
+          exit 1
+        fi
+    fi
+
+    if [ "$UNAME" = "Linux" ] ; then
+        sudo apt-get -y install git build-essential libffi-dev libxml2-dev
+    elif [ "$UNAME" = "Darwin" ] ; then
+        xcode-select -p
+        rc=$?; if [ $rc -eq 2 ]; then
+            sudo xcode-select --install
+        fi
+    fi
+
+    trap install_corto_fail EXIT
+
+    echo
+    echo "Hi! Installing corto..."
+
+    # Remove existing (older) versions
+    if [ "`which corto`" != "" ]  ; then
+        echo "removing existing corto installation"
+        sudo rm -rf ~/.corto/bin ~/.corto/lib ~/.corto/etc
+        sudo rm -f /usr/local/bin/bake /usr/local/bin/corto /usr/local/bin/corto.* /usr/local/lib/libcorto.so /usr/local/lib/libcorto.so.*
+        sudo rm -rf /usr/local/bin/cortobin /usr/local/lib/corto/* /usr/local/include/corto/* /usr/local/etc/corto/*
+    fi
+
+    # Create 'src' directory in .corto
+    mkdir -p "$INSTALL_TMPDIR"
+    cd $INSTALL_TMPDIR
+
+    # Install bake
+    echo "cloning bake repositories"
+    clone_repo "base"
+    clone_repo "bake"
+    clone_repo "driver-bake-c"
+    clone_repo "corto"
+
+    echo "installing bake"
+    cd bake
+    make
+    cd ..
+
+    # Corto repository is now downloaded. Download remaining essential packages
+    echo "cloning essential corto packages"
+    clone_repo "corto-tool"
+    clone_repo "argparse"
+    clone_repo "parson"
+    clone_repo "driver-tool-locate"
+    clone_repo "driver-tool-add"
+    clone_repo "driver-tool-remove"
+    clone_repo "driver-tool-create"
+    clone_repo "cdiff"
+    clone_repo "g"
+    clone_repo "driver-tool-pp"
+    clone_repo "c-binding"
+    clone_repo "driver-fmt-json"
+    clone_repo "driver-ext-json"
+    clone_repo "driver-fmt-xml"
+    clone_repo "driver-ext-xml"
+    clone_repo "vm"
+    clone_repo "ic"
+    clone_repo "corto-language"
+    clone_repo "test"
+    clone_repo "driver-tool-test"
+
+    # Build projects
+    echo "build projects"
+    bake
+
+    echo
+    corto --logo
+    echo
+    echo "Corto "`/usr/local/bin/corto --minor`" successfully installed!"
+    echo
+    echo "You have installed a development version. This means that corto has been"
+    echo "built with lots of features that spot errors early on, awesome! The downside"
+    echo "is that all this checking slows things down quite a bit. We recommend to"
+    echo "use a release version when you deploy corto apps. To install a"
+    echo "release version from source, do:"
+    echo "   $ curl https://corto.io/install-release-src | sh"
+    echo
+    echo "Get started by creating your first project! Simply do:"
+    echo
+    echo "   $ corto create myApp"
+    echo "   $ myApp/myApp"
+    echo
+
+    trap - EXIT
+}
+
+install_corto
