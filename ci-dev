@@ -52,12 +52,12 @@ install_corto () {
     trap install_corto_fail EXIT
 
     echo
-    echo "Hi! Installing corto..."
+    echo "Installing corto, this should just take a minute..."
 
     # Remove existing (older) versions
     if [ "`which corto`" != "" ]  ; then
-        echo "removing existing corto installation"
-        sudo rm -rf ~/.corto/bin ~/.corto/lib ~/.corto/etc
+        echo ">> Removing existing corto installation, may require your password! <<"
+        sudo rm -rf ~/.corto/bin ~/.corto/lib ~/.corto/etc ~/.bake
         sudo rm -f /usr/local/bin/bake /usr/local/bin/corto /usr/local/bin/corto.* /usr/local/lib/libcorto.so /usr/local/lib/libcorto.so.*
         sudo rm -rf /usr/local/bin/cortobin /usr/local/lib/corto/* /usr/local/include/corto/* /usr/local/etc/corto/*
     fi
