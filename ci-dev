@@ -71,7 +71,11 @@ install_corto () {
 
     echo "installing bake"
     cd bake
-    make
+    if [ "$UNAME" = "Linux" ] ; then
+        make -C build-linux
+    elif [ "$UNAME" = "Darwin" ] ; then
+        make -C build-darwin
+    fi
     cd ..
 
     # Corto repository is now downloaded. Download remaining essential packages
