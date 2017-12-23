@@ -68,7 +68,7 @@ install_corto () {
 
     # Install bake
     echo "cloning bake repositories"
-    clone_repo "base"
+    clone_repo "platform"
     clone_repo "bake"
     clone_repo "driver-bake-c"
     clone_repo "corto"
