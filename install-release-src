@@ -119,6 +119,8 @@ install_corto () {
     clone_repo "driver-ext-md"
     clone_repo "driver-gen-doc-html"
     clone_repo "driver-gen-doc-doxygen"
+    clone_repo "tags"
+    clone_repo "units"
 
     # Build projects
     echo "build projects"
