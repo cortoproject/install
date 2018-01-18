@@ -112,6 +112,7 @@ install_corto () {
     clone_repo "httpserver"
     clone_repo "httprouter"
     clone_repo "rest"
+    clone_repo "base64"
     clone_repo "ws"
     clone_repo "ui"
     clone_repo "driver-mnt-filestore"
@@ -121,6 +122,7 @@ install_corto () {
     clone_repo "driver-gen-doc-doxygen"
     clone_repo "tags"
     clone_repo "units"
+    clone_repo "range"
 
     # Build projects
     echo "build projects"
