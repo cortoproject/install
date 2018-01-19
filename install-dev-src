@@ -117,6 +117,7 @@ install_corto () {
     clone_repo "ui"
     clone_repo "driver-mnt-filestore"
     clone_repo "driver-tool-doc"
+    clone_repo "driver-tool-run"
     clone_repo "driver-ext-md"
     clone_repo "driver-gen-doc-html"
     clone_repo "driver-gen-doc-doxygen"
