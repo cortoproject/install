@@ -115,6 +115,7 @@ install_corto () {
     clone_repo "base64"
     clone_repo "ws"
     clone_repo "ui"
+    clone_repo "driver-ui-browser"
     clone_repo "driver-mnt-filestore"
     clone_repo "driver-tool-doc"
     clone_repo "driver-tool-run"
