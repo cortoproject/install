@@ -106,7 +106,7 @@ install_corto () {
     echo
     echo "Bake successfully installed!"
     echo
-    echo "Get started by creating your first project! In a new directory, do:"
+    echo "Get started by creating your first project with these commands:"
     echo
     echo "   $ mkdir my_app"
     echo "   $ cd my_app"
