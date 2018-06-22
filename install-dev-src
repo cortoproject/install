@@ -17,7 +17,6 @@ clone_repo() {
 }
 
 install_corto () {
-    set -e
     set -u
 
     UNAME=$(uname)
@@ -40,26 +39,28 @@ install_corto () {
         sudo apt-get -y install git build-essential libffi-dev libxml2-dev flex bison libcurl4-openssl-dev libssl-dev
     elif [ "$UNAME" = "Darwin" ] ; then
         pkgutil --pkg-info=com.apple.pkg.CLTools_Executables
-        rc=$?; if [ $rc -eq 1 ]; then
+        rc=$?; if [ $rc != 0 ]; then
             echo "Looks like Xcode command-line tools are not installed. Run:"
             echo "  sudo xcode-select --install"
             echo
             echo "Then try installing corto again!"
-            exit -1
+            exit 1
         fi
     fi
-
-    trap install_corto_fail EXIT
 
     echo
     echo "Installing corto, this should just take a minute..."
 
     # Remove existing (older) versions
-    if [ "`which corto`" != "" ]  ; then
+    corto --version
+    rc=$?
+    if [ $rc -eq 0 ]; then
         echo ">> Removing existing corto installation, may require your password! <<"
         sudo rm -rf ~/.corto/bin ~/.corto/lib ~/.corto/etc ~/.bake
         sudo rm -rf ~/corto/bin ~/corto/lib ~/corto/etc
     fi
+
+    trap install_corto_fail EXIT
 
     # Create 'src' directory in corto
     mkdir -p "$INSTALL_TMPDIR"

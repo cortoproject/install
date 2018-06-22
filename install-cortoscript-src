@@ -48,71 +48,39 @@ install_corto () {
         fi
     fi
 
-    echo
-    echo "Installing bake, this should just take a minute..."
-
-    # Remove existing (older) versions
+    # Check if corto is installed
     corto --version
     rc=$?
-    if [ $rc -eq 0 ]; then
-        echo "Removing existing bake installation"
-        sudo rm -rf ~/.corto/bin ~/.corto/lib ~/.corto/etc ~/.bake
-        sudo rm -rf ~/corto/bin ~/corto/lib ~/corto/etc
+    if [ $rc != 0 ]; then
+        echo
+        echo "Cortoscript requires a minimal corto/bake environment. To install, do:"
+        echo "  curl https://corto.io/install-bake | sh"
+        echo
+        exit 1
     fi
 
     trap install_corto_fail EXIT
+
+    echo
+    echo "Installing cortoscript, this may take a few minutes..."
 
     # Create 'src' directory in corto
     mkdir -p "$INSTALL_TMPDIR"
     cd $INSTALL_TMPDIR
 
-    # Install bake
-    echo "cloning bake repositories"
-    clone_repo "platform"
-    clone_repo "bake"
-    clone_repo "driver-bake-c"
-    clone_repo "corto"
-
-    echo "installing bake"
-    cd bake
-    if [ "$UNAME" = "Linux" ] ; then
-        make -C build-linux
-    elif [ "$UNAME" = "Darwin" ] ; then
-        make -C build-darwin
-    fi
-    cd ..
-
-    # Corto repository is now downloaded. Download remaining essential packages
-    echo "cloning essential corto packages"
-    clone_repo "corto-tool"
-    clone_repo "argparse"
-    clone_repo "parson"
-    clone_repo "driver-tool-locate"
-    clone_repo "driver-tool-list"
-    clone_repo "driver-tool-create"
-    clone_repo "cdiff"
-    clone_repo "g"
-    clone_repo "driver-tool-pp"
-    clone_repo "c-binding"
-    clone_repo "driver-fmt-json"
-    clone_repo "driver-ext-json"
+    echo "cloning cortoscript packages"
+    clone_repo "driver-fmt-xml"
+    clone_repo "driver-ext-xml"
+    clone_repo "antlr4-cpp"
+    clone_repo "script-parser"
+    clone_repo "script-ast"
+    clone_repo "script-ast-print"
+    clone_repo "script-declare"
+    clone_repo "driver-ext-corto"
 
     # Build projects
     echo "build projects"
     bake
-
-    echo
-    corto --logo
-    echo
-    echo "Bake successfully installed!"
-    echo
-    echo "Get started by creating your first project! In a new directory, do:"
-    echo
-    echo "   $ mkdir my_app"
-    echo "   $ cd my_app"
-    echo "   $ bake init"
-    echo "   $ bake"
-    echo
 
     trap - EXIT
 }
