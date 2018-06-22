@@ -22,7 +22,7 @@ install_corto () {
 
     UNAME=$(uname)
     ARCHITECTURE=$(uname -m)
-    INSTALL_TMPDIR="$HOME/.corto/src"
+    INSTALL_TMPDIR="$HOME/corto/src"
 
     # Check supported OS
     if [ "$UNAME" != "Linux" -a "$UNAME" != "Darwin" ] ; then
@@ -58,11 +58,10 @@ install_corto () {
     if [ "`which corto`" != "" ]  ; then
         echo ">> Removing existing corto installation, may require your password! <<"
         sudo rm -rf ~/.corto/bin ~/.corto/lib ~/.corto/etc ~/.bake
-        sudo rm -f /usr/local/bin/bake /usr/local/bin/corto /usr/local/bin/corto.* /usr/local/lib/libcorto.so /usr/local/lib/libcorto.so.*
-        sudo rm -rf /usr/local/bin/cortobin /usr/local/lib/corto/* /usr/local/include/corto/* /usr/local/etc/corto/*
+        sudo rm -rf ~/corto/bin ~/corto/lib ~/corto/etc
     fi
 
-    # Create 'src' directory in .corto
+    # Create 'src' directory in corto
     mkdir -p "$INSTALL_TMPDIR"
     cd $INSTALL_TMPDIR
 

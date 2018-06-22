@@ -17,12 +17,11 @@ clone_repo() {
 }
 
 install_corto () {
-    set -e
     set -u
 
     UNAME=$(uname)
     ARCHITECTURE=$(uname -m)
-    INSTALL_TMPDIR="$HOME/.corto/src"
+    INSTALL_TMPDIR="$HOME/corto/src"
 
     # Check supported OS
     if [ "$UNAME" != "Linux" -a "$UNAME" != "Darwin" ] ; then
@@ -56,13 +55,12 @@ install_corto () {
 
     # Remove existing (older) versions
     if [ "`which corto`" != "" ]  ; then
-        echo ">> Removing existing corto installation, may require your password! <<"
+        echo "Removing existing bake installation"
         sudo rm -rf ~/.corto/bin ~/.corto/lib ~/.corto/etc ~/.bake
-        sudo rm -f /usr/local/bin/bake /usr/local/bin/corto /usr/local/bin/corto.* /usr/local/lib/libcorto.so /usr/local/lib/libcorto.so.*
-        sudo rm -rf /usr/local/bin/cortobin /usr/local/lib/corto/* /usr/local/include/corto/* /usr/local/etc/corto/*
+        sudo rm -rf ~/corto/bin ~/corto/lib ~/corto/etc
     fi
 
-    # Create 'src' directory in .corto
+    # Create 'src' directory in corto
     mkdir -p "$INSTALL_TMPDIR"
     cd $INSTALL_TMPDIR
 
@@ -107,6 +105,8 @@ install_corto () {
     echo
     echo "Get started by creating your first project! In a new directory, do:"
     echo
+    echo "   $ mkdir my_app"
+    echo "   $ cd my_app"
     echo "   $ bake init"
     echo "   $ bake"
     echo
