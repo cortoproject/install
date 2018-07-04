@@ -52,17 +52,18 @@ install_corto () {
     trap install_corto_fail EXIT
 
     echo
-    echo "Installing corto, this should just take a minute..."
+    echo "Installing corto web, this should just take a minute..."
 
     # Create 'src' directory in corto
     mkdir -p "$INSTALL_TMPDIR"
     cd $INSTALL_TMPDIR
 
-    echo "cloning cortodoc packages"
-    clone_repo "driver-tool-doc"
-    clone_repo "driver-ext-md"
-    clone_repo "driver-gen-doc-html"
-    clone_repo "driver-gen-doc-doxygen"
+    # Corto repository is now downloaded. Download remaining essential packages
+    echo "cloning cx packages"
+    clone_repo "vm"
+    clone_repo "ic"
+    clone_repo "driver-ext-cx"
+    clone_repo "corto-language"
 
     # Build projects
     echo "build projects"
@@ -71,7 +72,7 @@ install_corto () {
     echo
     corto --logo
     echo
-    echo "Cortodoc packages successfully installed!"
+    echo "Corto web packages successfully installed!"
     echo
 
     trap - EXIT
