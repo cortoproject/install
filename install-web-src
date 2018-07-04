@@ -65,51 +65,17 @@ install_corto () {
     mkdir -p "$INSTALL_TMPDIR"
     cd $INSTALL_TMPDIR
 
-    # Install bake
-    echo "cloning bake repositories"
-    clone_repo "platform"
-    clone_repo "bake"
-    clone_repo "driver-bake-c"
-    clone_repo "corto"
-
-    echo "installing bake"
-    cd bake
-    if [ "$UNAME" = "Linux" ] ; then
-        make -C build-linux
-    elif [ "$UNAME" = "Darwin" ] ; then
-        make -C build-darwin
-    fi
-    cd ..
-
     # Corto repository is now downloaded. Download remaining essential packages
-    echo "cloning essential corto packages"
-    clone_repo "corto-tool"
-    clone_repo "argparse"
-    clone_repo "parson"
-    clone_repo "driver-tool-locate"
-    clone_repo "driver-tool-add"
-    clone_repo "driver-tool-remove"
-    clone_repo "driver-tool-create"
-    clone_repo "driver-tool-list"
-    clone_repo "driver-tool-locate"
-    clone_repo "cdiff"
-    clone_repo "g"
-    clone_repo "driver-tool-pp"
-    clone_repo "c-binding"
-    clone_repo "driver-fmt-json"
-    clone_repo "driver-ext-json"
-    clone_repo "driver-fmt-xml"
-    clone_repo "driver-ext-xml"
-    clone_repo "antlr4-cpp"
-    clone_repo "script-parser"
-    clone_repo "script-ast"
-    clone_repo "script-declare"
-    clone_repo "driver-ext-corto"
-    clone_repo "test"
-    clone_repo "driver-tool-test"
-    clone_repo "tags"
-    clone_repo "units"
-    clone_repo "range"
+    echo "cloning cortoweb packages"
+    clone_repo "x"
+    clone_repo "base64"
+    clone_repo "httpclient"
+    clone_repo "httpserver"
+    clone_repo "httprouter"
+    clone_repo "rest"
+    clone_repo "ws"
+    clone_repo "ui"
+    clone_repo "driver-ui-browser"
 
     # Build projects
     echo "build projects"
@@ -118,19 +84,7 @@ install_corto () {
     echo
     corto --logo
     echo
-    echo "Corto "`/usr/local/bin/corto --minor`" successfully installed!"
-    echo
-    echo "You have installed a development version. This means that corto has been"
-    echo "built with lots of features that spot errors early on, awesome! The downside"
-    echo "is that all this checking slows things down quite a bit. We recommend to"
-    echo "use a release version when you deploy corto apps. To install a"
-    echo "release version from source, do:"
-    echo "   $ curl https://corto.io/install-release-src | sh"
-    echo
-    echo "Get started by creating your first project! Simply do:"
-    echo
-    echo "   $ corto create myApp"
-    echo "   $ myApp/myApp"
+    echo "Corto web packages successfully installed!"
     echo
 
     trap - EXIT
