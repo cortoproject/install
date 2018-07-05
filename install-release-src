@@ -95,6 +95,7 @@ install_corto () {
     clone_repo "driver-tool-list"
     clone_repo "driver-tool-locate"
     clone_repo "driver-tool-default"
+    clone_repo "driver-tool-run"
     clone_repo "cdiff"
     clone_repo "g"
     clone_repo "driver-tool-pp"
