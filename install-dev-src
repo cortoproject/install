@@ -21,7 +21,7 @@ install_corto () {
 
     UNAME=$(uname)
     ARCHITECTURE=$(uname -m)
-    INSTALL_TMPDIR="corto-src"
+    INSTALL_TMPDIR="$HOME/corto/src"
 
     # Check supported OS
     if [ "$UNAME" != "Linux" -a "$UNAME" != "Darwin" ] ; then
