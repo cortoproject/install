@@ -104,6 +104,7 @@ install_corto () {
     clone_repo "antlr4-cpp"
     clone_repo "script-parser"
     clone_repo "script-ast"
+    clone_repo "script-ast-print"
     clone_repo "script-declare"
     clone_repo "driver-ext-corto"
     clone_repo "test"
