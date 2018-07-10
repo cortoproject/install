@@ -1,4 +1,7 @@
 #!/bin/bash
+
+set -eu
+
 install_corto_fail() {
     echo "Installation failed :("
 }
@@ -17,8 +20,6 @@ clone_repo() {
 }
 
 install_corto () {
-    set -u
-
     UNAME=$(uname)
     ARCHITECTURE=$(uname -m)
     INSTALL_TMPDIR="corto-src"
@@ -38,8 +39,7 @@ install_corto () {
     if [ "$UNAME" = "Linux" ] ; then
         sudo apt-get -y install git build-essential libffi-dev libxml2-dev
     elif [ "$UNAME" = "Darwin" ] ; then
-        pkgutil --pkg-info=com.apple.pkg.CLTools_Executables
-        rc=$?; if [ $rc -eq 1 ]; then
+        if ! pkgutil --pkg-info=com.apple.pkg.CLTools_Executables; then
             echo "Looks like Xcode command-line tools are not installed. Run:"
             echo "  sudo xcode-select --install"
             echo
