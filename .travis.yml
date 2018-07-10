@@ -1,0 +1,19 @@
+language: bash
+
+sudo: false
+
+addons:
+  apt:
+    packages:
+      - ghc
+      - cabal-install
+
+before_script:
+  - cabal update
+  - cabal install shellcheck
+
+script:
+  - shellcheck install-*
+
+matrix:
+  fast_finish: true
