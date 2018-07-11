@@ -13,7 +13,7 @@ before_script:
   - cabal install shellcheck
 
 script:
-  - shellcheck install-*
+  - shellcheck ci-dev install-*
 
 matrix:
   fast_finish: true
