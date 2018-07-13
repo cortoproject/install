@@ -7,38 +7,37 @@ install_corto_fail() {
 }
 
 clone_repo() {
-    if [ ! -d $1 ];
-    then
-        git clone https://github.com/cortoproject/${1}.git
+    if [ ! -d "$1" ]; then
+        git clone "https://github.com/cortoproject/${1}.git"
     else
-        cd $1
-        git fetch origin
-        git reset --hard origin/master
-        git clean -xdf
-        cd ..
+        (
+            cd "$1"
+            git fetch origin
+            git reset --hard origin/master
+            git clean -xdf
+        )
     fi
 }
 
 install_corto () {
     UNAME=$(uname)
-    ARCHITECTURE=$(uname -m)
     INSTALL_TMPDIR="$HOME/corto/src"
 
     # Check supported OS
-    if [ "$UNAME" != "Linux" -a "$UNAME" != "Darwin" ] ; then
+    if [ "$UNAME" != "Linux" ] && [ "$UNAME" != "Darwin" ]; then
         >&2 echo "Sorry, this OS is not supported yet!"
         exit 1
     fi
-    if [ "$UNAME" = "Darwin" ] ; then
-        if [ "i386" != "$(uname -p)" -o "1" != "$(sysctl -n hw.cpu64bit_capable 2>/dev/null || echo 0)" ] ; then
+    if [ "$UNAME" = "Darwin" ]; then
+        if [ "i386" != "$(uname -p)" ] || [ "1" != "$(sysctl -n hw.cpu64bit_capable 2>/dev/null || echo 0)" ]; then
           >&2 echo "corto: only 64-bit Intel processors are supported at this time!"
           exit 1
         fi
     fi
 
-    if [ "$UNAME" = "Linux" ] ; then
+    if [ "$UNAME" = "Linux" ]; then
         sudo apt-get -y install git build-essential libffi-dev libxml2-dev
-    elif [ "$UNAME" = "Darwin" ] ; then
+    elif [ "$UNAME" = "Darwin" ]; then
         if ! pkgutil --pkg-info=com.apple.pkg.CLTools_Executables; then
             echo "Looks like Xcode command-line tools are not installed. Run:"
             echo "  sudo xcode-select --install"
@@ -56,7 +55,7 @@ install_corto () {
 
     # Create 'src' directory in corto
     mkdir -p "$INSTALL_TMPDIR"
-    cd $INSTALL_TMPDIR
+    cd "$INSTALL_TMPDIR"
 
     # Corto repository is now downloaded. Download remaining essential packages
     echo "cloning cx packages"
