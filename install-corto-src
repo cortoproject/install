@@ -61,7 +61,7 @@ install_corto () {
     echo "cloning cx packages"
     clone_repo "vm"
     clone_repo "ic"
-    clone_repo "driver-ext-cx"
+    clone_repo "driver-ext-corto"
     clone_repo "corto-language"
 
     # Build projects
