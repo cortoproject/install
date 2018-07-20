@@ -8,13 +8,15 @@ install_corto_fail() {
 
 clone_repo() {
     if [ ! -d "$1" ]; then
-        git clone "https://github.com/cortoproject/${1}.git"
+        echo "Cloning $1..."
+        git clone -q "https://github.com/cortoproject/${1}.git"
     else
         (
             cd "$1"
-            git fetch origin
-            git reset --hard origin/master
-            git clean -xdf
+            echo "Reset $1..."
+            git fetch -q origin
+            git reset -q --hard origin/master
+            git clean -q -xdf
         )
     fi
 }
@@ -65,13 +67,13 @@ install_corto () {
     cd "$INSTALL_TMPDIR"
 
     # Install bake
-    echo "cloning bake repositories"
+    echo "Cloning bake repositories"
     clone_repo "platform"
     clone_repo "bake"
     clone_repo "driver-bake-c"
     clone_repo "corto"
 
-    echo "installing bake"
+    echo "Installing bake"
     cd bake
     if [ "$UNAME" = "Linux" ]; then
         make -C build-linux
@@ -81,7 +83,7 @@ install_corto () {
     cd ..
 
     # Corto repository is now downloaded. Download remaining essential packages
-    echo "cloning essential corto packages"
+    echo "Cloning essential corto packages"
     clone_repo "corto-tool"
     clone_repo "argparse"
     clone_repo "parson"
@@ -114,7 +116,7 @@ install_corto () {
     clone_repo "range"
 
     # Build projects
-    echo "build projects"
+    echo "Build projects"
     bake --cfg release
 
     echo

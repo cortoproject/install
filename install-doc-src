@@ -7,15 +7,16 @@ install_corto_fail() {
 }
 
 clone_repo() {
-    if [ ! -d "$1" ];
-    then
-        git clone "https://github.com/cortoproject/${1}.git"
+    if [ ! -d "$1" ]; then
+        echo "Cloning $1..."
+        git clone -q "https://github.com/cortoproject/${1}.git"
     else
         (
             cd "$1"
-            git fetch origin
-            git reset --hard origin/master
-            git clean -xdf
+            echo "Reset $1..."
+            git fetch -q origin
+            git reset -q --hard origin/master
+            git clean -q -xdf
         )
     fi
 }
@@ -58,14 +59,14 @@ install_corto () {
     mkdir -p "$INSTALL_TMPDIR"
     cd "$INSTALL_TMPDIR"
 
-    echo "cloning cortodoc packages"
+    echo "Cloning cortodoc packages"
     clone_repo "driver-tool-doc"
     clone_repo "driver-ext-md"
     clone_repo "driver-gen-doc-html"
     clone_repo "driver-gen-doc-doxygen"
 
     # Build projects
-    echo "build projects"
+    echo "Build projects"
     bake
 
     echo

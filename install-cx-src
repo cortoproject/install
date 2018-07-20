@@ -8,13 +8,15 @@ install_corto_fail() {
 
 clone_repo() {
     if [ ! -d "$1" ]; then
-        git clone "https://github.com/cortoproject/${1}.git"
+        echo "Cloning $1..."
+        git clone -q "https://github.com/cortoproject/${1}.git"
     else
         (
             cd "$1"
-            git fetch origin
-            git reset --hard origin/master
-            git clean -xdf
+            echo "Reset $1..."
+            git fetch -q origin
+            git reset -q --hard origin/master
+            git clean -q -xdf
         )
     fi
 }
@@ -58,14 +60,14 @@ install_corto () {
     cd "$INSTALL_TMPDIR"
 
     # Corto repository is now downloaded. Download remaining essential packages
-    echo "cloning cx packages"
+    echo "Cloning cx packages"
     clone_repo "vm"
     clone_repo "ic"
     clone_repo "driver-ext-cx"
     clone_repo "corto-language"
 
     # Build projects
-    echo "build projects"
+    echo "Build projects"
     bake
 
     echo

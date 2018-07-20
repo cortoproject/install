@@ -8,13 +8,15 @@ install_corto_fail() {
 
 clone_repo() {
     if [ ! -d "$1" ]; then
-        git clone "https://github.com/cortoproject/${1}.git"
+        echo "Cloning $1..."
+        git clone -q "https://github.com/cortoproject/${1}.git"
     else
         (
             cd "$1"
-            git fetch origin
-            git reset --hard origin/master
-            git clean -xdf
+            echo "Reset $1..."
+            git fetch -q origin
+            git reset -q --hard origin/master
+            git clean -q -xdf
         )
     fi
 }
