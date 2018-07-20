@@ -52,13 +52,6 @@ install_corto () {
     echo
     echo "Installing bake, this should just take a minute..."
 
-    # Remove existing (older) versions
-    if corto --version; then
-        echo "Removing existing bake installation"
-        sudo rm -rf ~/.corto/bin ~/.corto/lib ~/.corto/etc ~/.bake
-        sudo rm -rf ~/corto/bin ~/corto/lib ~/corto/etc
-    fi
-
     trap install_corto_fail EXIT
 
     # Create 'src' directory in corto
