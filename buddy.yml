@@ -4,7 +4,7 @@
   actions:
   -
     action: "Lint!"
-    inline_commands: shellcheck /buddy/install/ci-dev buddy/install/install-*
+    inline_commands: 'shellcheck'
     type: "RUN_DOCKER_CONTAINER"
     docker_image_name: koalaman/shellcheck-alpine
     docker_image_tag: v0.5.0
@@ -14,15 +14,6 @@
   -
     action: "Test ci-dev"
     inline_commands: "/buddy/install/ci-dev"
-    type: "RUN_DOCKER_CONTAINER"
-    docker_image_name: "jleeothon/corto-install-runner"
-    docker_image_tag: "ubuntu16-04-master"
-    mount_filesystem_path: "/buddy/install"
-    shell: "SH"
-    trigger_condition: "ALWAYS"
-  -
-    action: "Test install-cx-src"
-    inline_commands: "/buddy/install/install-cx-src"
     type: "RUN_DOCKER_CONTAINER"
     docker_image_name: "jleeothon/corto-install-runner"
     docker_image_tag: "ubuntu16-04-master"

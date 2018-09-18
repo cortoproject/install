@@ -56,7 +56,7 @@ install_corto () {
     echo "Installing corto, this should just take a minute..."
 
     # Remove existing (older) versions
-    if [ "$(which corto)" != "" ]; then
+    if [ "$(command -v corto)" != "" ]; then
         echo ">> Removing existing corto installation, may require your password! <<"
         sudo rm -rf ~/.corto/bin ~/.corto/lib ~/.corto/etc ~/.bake
         sudo rm -rf ~/corto/bin ~/corto/lib ~/corto/etc
