@@ -1,19 +1,38 @@
-language: bash
+language: c
 
-sudo: false
+os:
+  - linux
+  - osx
+
+sudo: required
+
+dist:
+  - trusty
+  - xenial
+
+compiler:
+  - gcc
+  - clang
 
 addons:
   apt:
-    packages:
-      - ghc
-      - cabal-install
+    update: true
 
-before_script:
-  - cabal update
-  - cabal install shellcheck
-
-script:
-  - shellcheck ci-dev install-*
+env:
+  - SCRIPT_UNDER_TEST=ci-dev
+  - SCRIPT_UNDER_TEST=install-bake
+  - SCRIPT_UNDER_TEST=install-corto-src
+  - SCRIPT_UNDER_TEST=install-dev-src
+  - SCRIPT_UNDER_TEST=install-doc-src
+  - SCRIPT_UNDER_TEST=install-release-src
+  - SCRIPT_UNDER_TEST=install-web-src
 
 matrix:
-  fast_finish: true
+  exclude:
+    - os: osx
+      compiler: gcc
+    - os: linux
+      compiler: clang
+
+script:
+  - ./"${SCRIPT_UNDER_TEST}"
