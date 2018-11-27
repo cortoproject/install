@@ -127,7 +127,7 @@ install_corto () {
     echo
     echo "Get started by creating your first project! Simply do:"
     echo
-    echo "   $ corto create myApp"
+    echo "   $ corto create my_app"
     echo
 
     trap - EXIT
