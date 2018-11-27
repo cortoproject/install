@@ -38,7 +38,7 @@ install_corto () {
     fi
 
     if [ "$UNAME" = "Linux" ]; then
-        sudo apt-get -y install git build-essential libffi-dev libxml2-dev
+        sudo apt-get -y install git build-essential libffi-dev libxml2-dev libcurl4-openssl-dev
     elif [ "$UNAME" = "Darwin" ]; then
         if ! pkgutil --pkg-info=com.apple.pkg.CLTools_Executables; then
             echo "Looks like Xcode command-line tools are not installed. Run:"
