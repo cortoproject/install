@@ -61,15 +61,15 @@ install_corto () {
 
     # Corto repository is now downloaded. Download remaining essential packages
     echo "Cloning cortoweb packages"
-    clone_repo "x"
+    clone_repo "corto-x"
     clone_repo "base64"
-    clone_repo "httpclient"
-    clone_repo "httpserver"
-    clone_repo "httprouter"
-    clone_repo "httplogin"
-    clone_repo "rest"
-    clone_repo "ws"
-    clone_repo "ui"
+    clone_repo "corto-httpclient"
+    clone_repo "corto-httpserver"
+    clone_repo "corto-httprouter"
+    clone_repo "corto-httplogin"
+    clone_repo "corto-rest"
+    clone_repo "corto-ws"
+    clone_repo "corto-ui"
     clone_repo "driver-ui-browser"
     clone_repo "corto-js"
 
