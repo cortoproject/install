@@ -23,11 +23,11 @@ clone_repo() {
 
 install_corto () {
     UNAME=$(uname)
-    INSTALL_TMPDIR="$HOME/corto/src"
+    INSTALL_TMPDIR="$HOME/bake/src"
 
     # Check supported OS
     if [ "$UNAME" != "Linux" ] && [ "$UNAME" != "Darwin" ]; then
-        >&2 echo "corto: sorry, this OS is not supported yet!"
+        >&2 echo "Sorry, this OS is not supported yet!"
         exit 1
     fi
     if [ "$UNAME" = "Darwin" ]; then
@@ -38,22 +38,22 @@ install_corto () {
     fi
 
     if [ "$UNAME" = "Linux" ]; then
-        sudo apt-get -y install git build-essential libffi-dev libxml2-dev flex bison libcurl4-openssl-dev libssl-dev
+        sudo apt-get -y install git build-essential libffi-dev libxml2-dev
     elif [ "$UNAME" = "Darwin" ]; then
         if ! pkgutil --pkg-info=com.apple.pkg.CLTools_Executables; then
             echo "Looks like Xcode command-line tools are not installed. Run:"
             echo "  sudo xcode-select --install"
             echo
             echo "Then try installing corto again!"
-            exit 1
+            exit -1
         fi
     fi
 
+    set -e
+    trap install_corto_fail EXIT
 
     echo
     echo "Installing corto, this should just take a minute..."
-
-    trap install_corto_fail EXIT
 
     # Create 'src' directory in corto
     mkdir -p "$INSTALL_TMPDIR"
@@ -61,33 +61,22 @@ install_corto () {
 
     # Install bake
     echo "Cloning bake repositories"
-    clone_repo "platform"
     clone_repo "bake"
-    clone_repo "driver-bake-c"
-    clone_repo "corto"
 
     echo "Installing bake"
-    cd bake
-    if [ "$UNAME" = "Linux" ]; then
-        make -C build-linux
-    elif [ "$UNAME" = "Darwin" ]; then
-        make -C build-darwin
-    fi
-    cd ..
+    make -C bake/build-$UNAME
+    bake/bake setup
 
     # Corto repository is now downloaded. Download remaining essential packages
     echo "Cloning essential corto packages"
+    clone_repo "bake-corto"
+    clone_repo "corto"
     clone_repo "corto-tool"
     clone_repo "argparse"
     clone_repo "parson"
-    clone_repo "driver-tool-locate"
-    clone_repo "driver-tool-add"
-    clone_repo "driver-tool-remove"
     clone_repo "driver-tool-create"
-    clone_repo "driver-tool-list"
-    clone_repo "driver-tool-locate"
     clone_repo "driver-tool-default"
-    clone_repo "driver-tool-run"
+    clone_repo "driver-tool-test"
     clone_repo "driver-tool-sh"
     clone_repo "cdiff"
     clone_repo "g"
@@ -100,23 +89,24 @@ install_corto () {
     clone_repo "antlr4-cpp"
     clone_repo "script-parser"
     clone_repo "script-ast"
-    clone_repo "script-ast-print"
     clone_repo "script-declare"
     clone_repo "driver-ext-corto"
     clone_repo "test"
-    clone_repo "driver-tool-test"
     clone_repo "tags"
     clone_repo "units"
     clone_repo "range"
 
     # Build projects
     echo "Build projects"
+    bake bake-corto --build-to-home
     bake --cfg release
+
+    export $(bake env)
 
     echo
     corto --logo
     echo
-    echo "Corto $(/usr/local/bin/corto --minor) successfully installed!"
+    echo "Corto $(corto --minor) successfully installed!"
     echo
     echo "You have installed a release version. This means that corto has been"
     echo "built with optimizations to run as fast as possible, awesome! The downside"
@@ -125,9 +115,15 @@ install_corto () {
     echo "develop corto apps. To install a dev version from source, do:"
     echo "   $ curl https://corto.io/install-dev-src | sh"
     echo
-    echo "Get started by creating your first project! Simply do:"
+    echo "Get started by creating your first project! First, make sure your bake"
+    echo "environment is exported to your terminal:"
+    echo "   $ export \$(bake env)"
     echo
+    echo "To now create a new project, run this command:"
     echo "   $ corto create my_app"
+    echo
+    echo "To run your project, you can run this command:"
+    echo "   $ bake run my_app"
     echo
 
     trap - EXIT

@@ -23,7 +23,7 @@ clone_repo() {
 
 install_corto () {
     UNAME=$(uname)
-    INSTALL_TMPDIR="corto-src"
+    INSTALL_TMPDIR="$HOME/bake/src"
 
     # Check supported OS
     if [ "$UNAME" != "Linux" ] && [ "$UNAME" != "Darwin" ]; then
@@ -55,43 +55,26 @@ install_corto () {
     echo
     echo "Installing corto, this should just take a minute..."
 
-    # Remove existing (older) versions
-    if [ "$(which corto)" != "" ]; then
-        echo ">> Removing existing corto installation, may require your password! <<"
-        sudo rm -rf ~/.corto/bin ~/.corto/lib ~/.corto/etc ~/.bake
-        sudo rm -rf ~/corto/bin ~/corto/lib ~/corto/etc
-    fi
-
     # Create 'src' directory in corto
     mkdir -p "$INSTALL_TMPDIR"
     cd "$INSTALL_TMPDIR"
 
     # Install bake
-    echo "cloning bake repositories"
-    clone_repo "platform"
+    echo "Cloning bake repositories"
     clone_repo "bake"
-    clone_repo "driver-bake-c"
-    clone_repo "corto"
 
-    echo "installing bake"
-    (
-        cd bake
-        if [ "$UNAME" = "Linux" ]; then
-            make -C build-linux
-        elif [ "$UNAME" = "Darwin" ]; then
-            make -C build-darwin
-        fi
-    )
+    echo "Installing bake"
+    make -C bake/build-$UNAME
+    bake/bake setup
 
     # Corto repository is now downloaded. Download remaining essential packages
-    echo "cloning essential corto packages"
+    echo "Cloning essential corto packages"
+    clone_repo "bake-corto"
     clone_repo "corto-tool"
     clone_repo "argparse"
     clone_repo "parson"
-    clone_repo "driver-tool-locate"
-    clone_repo "driver-tool-add"
-    clone_repo "driver-tool-remove"
     clone_repo "driver-tool-create"
+    clone_repo "driver-tool-test"
     clone_repo "cdiff"
     clone_repo "g"
     clone_repo "driver-tool-pp"
@@ -106,7 +89,6 @@ install_corto () {
     clone_repo "script-declare"
     clone_repo "driver-ext-corto"
     clone_repo "test"
-    clone_repo "driver-tool-test"
 
     # Build projects
     echo "build projects"

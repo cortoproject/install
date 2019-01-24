@@ -23,7 +23,7 @@ clone_repo() {
 
 install_corto () {
     UNAME=$(uname)
-    INSTALL_TMPDIR="$HOME/corto/src"
+    INSTALL_TMPDIR="$HOME/bake/src"
 
     # Check supported OS
     if [ "$UNAME" != "Linux" ] && [ "$UNAME" != "Darwin" ]; then

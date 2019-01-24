@@ -23,7 +23,7 @@ clone_repo() {
 
 install_corto () {
     UNAME=$(uname)
-    INSTALL_TMPDIR="$HOME/corto/src"
+    INSTALL_TMPDIR="$HOME/bake/src"
 
     # Check supported OS
     if [ "$UNAME" != "Linux" ] && [ "$UNAME" != "Darwin" ]; then
@@ -61,33 +61,21 @@ install_corto () {
 
     # Install bake
     echo "Cloning bake repositories"
-    clone_repo "platform"
     clone_repo "bake"
-    clone_repo "driver-bake-c"
-    clone_repo "corto"
 
-    echo "installing bake"
-    cd bake
-    if [ "$UNAME" = "Linux" ]; then
-        make -C build-linux
-    elif [ "$UNAME" = "Darwin" ]; then
-        make -C build-darwin
-    fi
-    cd ..
+    echo "Installing bake"
+    make -C bake/build-$UNAME
+    bake/bake setup
 
     # Corto repository is now downloaded. Download remaining essential packages
     echo "Cloning essential corto packages"
+    clone_repo "bake-corto"
+    clone_repo "corto"
     clone_repo "corto-tool"
     clone_repo "argparse"
     clone_repo "parson"
-    clone_repo "driver-tool-locate"
-    clone_repo "driver-tool-add"
-    clone_repo "driver-tool-remove"
     clone_repo "driver-tool-create"
-    clone_repo "driver-tool-list"
-    clone_repo "driver-tool-locate"
     clone_repo "driver-tool-default"
-    clone_repo "driver-tool-run"
     clone_repo "driver-tool-test"
     clone_repo "driver-tool-sh"
     clone_repo "cdiff"
@@ -101,7 +89,6 @@ install_corto () {
     clone_repo "antlr4-cpp"
     clone_repo "script-parser"
     clone_repo "script-ast"
-    clone_repo "script-ast-print"
     clone_repo "script-declare"
     clone_repo "driver-ext-corto"
     clone_repo "test"
@@ -111,12 +98,15 @@ install_corto () {
 
     # Build projects
     echo "Build projects"
+    bake bake-corto
     bake
+
+    export $(bake env)
 
     echo
     corto --logo
     echo
-    echo "Corto $(/usr/local/bin/corto --minor) successfully installed!"
+    echo "Corto $(corto --minor) successfully installed!"
     echo
     echo "You have installed a development version. This means that corto has been"
     echo "built with lots of features that spot errors early on, awesome! The downside"
@@ -125,10 +115,15 @@ install_corto () {
     echo "release version from source, do:"
     echo "   $ curl https://corto.io/install-release-src | sh"
     echo
-    echo "Get started by creating your first project! Simply do:"
+    echo "Get started by creating your first project! First, make sure your bake"
+    echo "environment is exported to your terminal:"
+    echo "   $ export \$(bake env)"
     echo
+    echo "To now create a new project, run this command:"
     echo "   $ corto create my_app"
-    echo "   $ my_app/my_app"
+    echo
+    echo "To run your project, you can run this command:"
+    echo "   $ bake run my_app"
     echo
 
     trap - EXIT
